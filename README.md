@@ -1,1 +1,1 @@
-# DeepPred
+# DeepStock
