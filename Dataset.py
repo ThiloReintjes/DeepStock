@@ -227,3 +227,20 @@ class StockDataset(Dataset):
     def norm_decimal(self, data, label, extra_data):
         # TODO
         return data, label, extra_data
+
+
+class ConcatDataset(Dataset):
+    def __init__(self, *datasets):
+        self.datasets = datasets
+
+    def __getitem__(self, i):
+        length = 0
+        for d in self.datasets:
+            if i - length < len(d):
+                data = d.__getitem__(i - length)
+                return data
+            else:
+                length += len(d)
+
+    def __len__(self):
+        return sum(len(d) for d in self.datasets)
