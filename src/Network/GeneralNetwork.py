@@ -4,7 +4,7 @@ import torch
 import abc
 import torch.utils.data as td
 import os
-import Dataset
+from src import Dataset
 
 
 class GeneralNetwork(pl.LightningModule):

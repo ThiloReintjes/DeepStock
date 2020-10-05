@@ -1,5 +1,4 @@
-import pytorch_lightning as pl
-import Network.GeneralNetwork as gNet
+import src.Network.GeneralNetwork as gNet
 import torch.nn as nn
 
 

@@ -20,8 +20,11 @@ class StockDataset(Dataset):
 
         # check if already computed
         name = os.path.basename(os.path.normpath(self.csv_path))
-        self.computed_name = "computed_" + self.label + "_" + self.label_type + "_" + self.threshold + "_" + self.normalization + name
+
+        self.computed_name = "computed_" + self.label + "_" + self.label_type + "_" + str(
+            self.threshold) + "_" + self.normalization + name
         computed_path = os.path.dirname(self.csv_path) + "/" + self.computed_name
+
         if os.path.isfile(computed_path) and training:
             print("loading", self.computed_name)
             self.dataset = pd.read_csv(computed_path, sep=",")
@@ -55,9 +58,10 @@ class StockDataset(Dataset):
             norm_info = (None, None)
             extra_data = [date, close, norm_info, self.csv_path, label_unnorm]
 
-        data = self.compute_norm(data, label, extra_data)
+        data, label, extra_data = self.compute_norm(data, label, extra_data)
 
         data = torch.tensor(data, dtype=torch.float)
+        label = torch.tensor(label, dtype=torch.float)
 
         if not self.training:
             return data, label, extra_data
@@ -187,7 +191,16 @@ class StockDataset(Dataset):
         if self.normalization is "decimal":
             return self.norm_decimal(data, label, extra_data)
 
+        if self.normalization is "None":
+            return self.norm_none(data, label, extra_data)
+
         raise Exception("No label computed!")
+
+    def norm_none(self, data, label, extra_data):
+        # to_numpy
+        data = data.to_numpy(dtype=float, copy=True)
+
+        return data, label, extra_data
 
     def norm_min_max(self, data, label, extra_data):
         # separate RSI and Volume
