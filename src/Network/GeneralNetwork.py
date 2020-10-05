@@ -65,7 +65,7 @@ class GeneralNetwork(pl.LightningModule):
         loss = self.loss(out, target)
 
         # accuracy
-        acc = self.handel_acc(out, target)
+        acc = self.compute_acc(out, target)
 
         return out, loss, acc
 
@@ -148,7 +148,7 @@ class GeneralNetwork(pl.LightningModule):
         return [optim], [lr_scheduler]
 
     def prepare_data(self):
-        path = os.path.dirname(os.getcwd()) + "/Stock Datasets/Data/training"
+        path = os.path.dirname(os.getcwd()) + "/Projekte/DeepStock/Data/training"
 
         datasets_list = []
 
@@ -158,21 +158,22 @@ class GeneralNetwork(pl.LightningModule):
                     Dataset.StockDataset(
                         csv_path=path + "/" + filename,
                         days_of_data=self.hparams["days_of_data"],
-                        label=self.hparams["to_predict"],
+                        label=self.hparams["label"],
                         label_type=self.hparams["label_type"],
                         threshold=self.hparams["threshold"],
-                        normalization=self.hparams["normalize"],
+                        normalization=self.hparams["normalization"],
                         training=True)
                 )
-        path = os.getcwd()
+
+        path = os.path.dirname(os.getcwd()) + "/Projekte/DeepStock/Data/test"
 
         dataset_test = Dataset.StockDataset(
-            csv_path=path + "/Data/test/AAPL.csv",
+            csv_path=path + "/AAPL.csv",
             days_of_data=self.hparams["days_of_data"],
-            label=self.hparams["to_predict"],
+            label=self.hparams["label"],
             label_type=self.hparams["label_type"],
             threshold=self.hparams["threshold"],
-            normalization=self.hparams["normalize"],
+            normalization=self.hparams["normalization"],
             training=True,
         )
 

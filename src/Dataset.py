@@ -22,7 +22,7 @@ class StockDataset(Dataset):
         name = os.path.basename(os.path.normpath(self.csv_path))
 
         self.computed_name = "computed_" + self.label + "_" + self.label_type + "_" + str(
-            self.threshold) + "_" + self.normalization + name
+            self.threshold) + "_" + self.normalization + "_" + name
         computed_path = os.path.dirname(self.csv_path) + "/" + self.computed_name
 
         if os.path.isfile(computed_path) and training:
@@ -61,7 +61,7 @@ class StockDataset(Dataset):
         data, label, extra_data = self.compute_norm(data, label, extra_data)
 
         data = torch.tensor(data, dtype=torch.float)
-        label = torch.tensor(label, dtype=torch.float)
+        # label = torch.tensor(label, dtype=torch.float)
 
         if not self.training:
             return data, label, extra_data

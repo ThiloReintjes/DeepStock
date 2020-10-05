@@ -1,7 +1,7 @@
 import torch
 
 
-def last_n_days(model, dataset, n, pred_type, thresholde=0.05):
+def last_n_days(model, dataset, n, pred_type, threshold=0.05):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     pred = []
@@ -38,7 +38,7 @@ def last_n_days(model, dataset, n, pred_type, thresholde=0.05):
                                       "label": label[0].item()})
 
             if pred_type is "percent":
-                if 0 < y_hat - 1 >= thresholde or 0 > y_hat - 1 <= thresholde * -1:
+                if 0 < y_hat - 1 >= threshold or 0 > y_hat - 1 <= threshold * -1:
                     # calculate
                     close0 = saved_data[1].iloc[0].item()
                     close1 = saved_data[4].item()
@@ -46,18 +46,18 @@ def last_n_days(model, dataset, n, pred_type, thresholde=0.05):
                     percent = (close1 / close0 - 1)
 
                     buy_date = saved_data[0].iloc[0]
-                    if 0 < y_hat - 1 >= thresholde:
+                    if 0 < y_hat - 1 >= threshold:
                         long.append({"buy_date": buy_date, "diff": diff, "percent": percent, "predicted": y_hat,
                                      "label": label[0].item()})
 
-                    elif 0 > y_hat - 1 <= thresholde * -1:
+                    elif 0 > y_hat - 1 <= threshold * -1:
                         short.append({"buy_date": buy_date, "diff": diff, "percent": percent, "predicted": y_hat,
                                       "label": label[0].item()})
 
             if pred_type is "real":
                 y_hat = ((y_hat + 1) / 2) * (saved_data[2][1] - saved_data[2][0]) + saved_data[2][0]
                 close_percent = y_hat / saved_data[1].iloc[0]
-                if close_percent >= 1 + thresholde or close_percent <= 1 - thresholde:
+                if close_percent >= 1 + threshold or close_percent <= 1 - threshold:
                     # calculate
                     close0 = saved_data[1].iloc[0].item()
                     close1 = saved_data[4].item()
@@ -65,10 +65,10 @@ def last_n_days(model, dataset, n, pred_type, thresholde=0.05):
                     percent = (close1 / close0 - 1)
 
                     buy_date = saved_data[0].iloc[0]
-                    if close_percent >= 1 + thresholde:
+                    if close_percent >= 1 + threshold:
                         long.append({"buy_date": buy_date, "diff": diff, "percent": percent, "predicted": y_hat,
                                      "label": label})
-                    elif close_percent <= 1 - thresholde:
+                    elif close_percent <= 1 - threshold:
                         short.append({"buy_date": buy_date, "diff": diff, "percent": percent, "predicted": y_hat,
                                       "label": label})
 
